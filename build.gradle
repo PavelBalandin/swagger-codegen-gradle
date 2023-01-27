@@ -1,0 +1,61 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.0.2'
+    id 'io.spring.dependency-management' version '1.1.0'
+    id 'org.hidetake.swagger.generator' version '2.19.2'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.8'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'io.swagger.codegen.v3:swagger-codegen-generators:1.0.36'
+    implementation 'javax.annotation:javax.annotation-api:1.3.2'
+    implementation 'javax.xml.bind:jaxb-api:2.3.1'
+    compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
+    swaggerCodegen 'io.swagger.codegen.v3:swagger-codegen-cli:3.0.39'
+    swaggerCodegen 'org.openapitools:openapi-generator-cli:3.3.4'
+    swaggerUI 'org.webjars:swagger-ui:3.52.5'
+    compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+/* You copy a file by creating an instance of Gradle’s builtin Copy task and
+configuring it with the location of the file and where you want to put it. */
+tasks.register('copyGenerated', Copy) {
+    from layout.buildDirectory.dir("swagger-code-bookstore/src/main/java/com/example")
+    into "src/main/java/com/example"
+}
+
+swaggerSources {
+    bookstore {
+        inputFile = file('src/main/resources/api/books.yml')
+        code {
+            language = 'spring'
+            configFile = file('src/main/resources/api/config.json')
+        }
+    }
+}
+
+task genereateAPI(type: GradleBuild) {
+    tasks = ['generateSwaggerCode', 'copyGenerated']
+}

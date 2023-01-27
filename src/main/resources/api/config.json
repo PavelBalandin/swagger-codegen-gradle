@@ -1,0 +1,6 @@
+{
+  "library": "spring-mvc",
+  "modelPackage": "com.example.model",
+  "apiPackage": "com.example.api",
+  "invokerPackage": "com.example"
+}

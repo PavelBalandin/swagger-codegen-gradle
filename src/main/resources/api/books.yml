@@ -1,0 +1,163 @@
+openapi: 3.0.0
+
+info:
+  title: Book store
+  description: Test project for studying
+  version: 1.0.0
+  contact:
+    name: Pavlo Balandin
+    email: pashabalandin1200@gmail.com
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Staging server for testing
+
+paths:
+  /books:
+    get:
+      tags:
+        - books
+      summary: Get the list of books
+      description: Get the list of all book present in store
+      operationId: getAll
+      responses:
+        '200':
+          description: Returns the list of books
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Book'
+    post:
+      tags:
+        - books
+      summary: Add new book
+      description: Create new book
+      operationId: create
+      requestBody:
+        required: true
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: "#/components/schemas/Book"
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/Book'
+
+  /books/{id}:
+    get:
+      tags:
+        - books
+      summary: Get book by id
+      description: Get book by id
+      operationId: getById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Book
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '404':
+          description: Not found
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      tags:
+        - books
+      summary: Add new book
+      description: Create new book
+      operationId: update
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      requestBody:
+        required: true
+        content:
+          application/json;charset=UTF-8:
+            schema:
+              $ref: "#/components/schemas/Book"
+      responses:
+        '200':
+          description: Updates
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '404':
+          description: Not found
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      tags:
+        - books
+      summary: Delete book
+      description: Delete book by id
+      operationId: delete
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '204':
+          description: Deleted
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '404':
+          description: Not found
+          content:
+            application/json;charset=UTF-8:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    Book:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+          description: The name of the book
+        price:
+          type: integer
+          description: The price id of the book
+        status:
+          type: string
+          enum:
+            - in stock
+            - out of stock
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
